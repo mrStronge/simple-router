@@ -63,21 +63,21 @@ class Router
     public function resolveUrl($requestMethod, $url): mixed
     {
         $requestUri = explode('?', $url);
-        $route = array_filter(explode('/', trim($requestUri[0], '/')));
+        $route = trim($requestUri[0], '/');
 
-        $baseRoute = '/' . array_shift($route);
+        echo $route.'<br>';
 
-        if (!array_key_exists($baseRoute, $this->routes[$requestMethod])) {
-            throw new Exception();
+        foreach ($this->routes[$requestMethod] as $path => $mapping) {
+            echo $path . ' - ';
+            $regex = preg_replace('/\{[a-z|0-9]*\}/', '?[a-z|0-9]{1,}', $path);
+            echo $regex.'<br>';
         }
 
-        $callClass = $this->routes[$requestMethod][$baseRoute][0];
-        $callMethod = $this->routes[$requestMethod][$baseRoute][1];
-        return $this->call($callClass, $callMethod, $route);
+        throw new RouteNotFoundException();
     }
 
     /**
-     * @throws Exception
+     * @throws RouteNotFoundException
      */
     protected function call($controller, $method, array $arguments = []): mixed
     {
