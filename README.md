@@ -11,7 +11,7 @@ composer req mrstronge/simple-router
 ### index/bootstrap
 
 * Create a new instance of the router with your project-namespace as parameter (eg 'vendor\project')
-* Call the `resolveUrl` method to get the return of the mapped controller-action. 
+* Call the `resolveUrl` method to get the return of the mapped controller-action.
   You can pass an optional request-method or -url. By default, the `resolveUrl` method uses `$_SERVER['REQUEST_METHOD']` and `$_SERVER['REQUEST_URI']`.
 
 ```php
@@ -80,7 +80,7 @@ class ProductController extends AbstractController
 ```
 
 ## What's next?
-* support for multipart paths with variable segments
+* support for regular expressions in the url-path
 * support for multiple request-methods or wildcard-method
 * add some tests and replace ugly parts ;-)
 
