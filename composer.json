@@ -3,24 +3,23 @@
     "description" : "A simple router to map request-url to controller-actions with given attributes",
     "type": "library",
     "license": "MIT",
-    "version": "0.1",
+    "version": "1.0.1",
     "authors": [
         {
             "name": "Maik Starke"
         }
     ],
     "require": {
-        "php": ">=8.1"
+        "php": ">=8.1",
+        "haydenpierce/class-finder": "^0.4"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.8"
     },
     "autoload": {
         "psr-4": {
             "MrStronge\\SimpleRouter\\": "src/"
         }
-    },
-    "require-dev": {
-        "phpstan/phpstan": "^1.8"
-    },
-    "require": {
-        "haydenpierce/class-finder": "^0.4"
     }
+
 }
