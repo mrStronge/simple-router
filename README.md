@@ -1,5 +1,5 @@
 # simple-router
-This package provides a simple router for php.
+This package provides a simple router for php and supports all http-methods.
 
 ## Installation
 
@@ -10,19 +10,24 @@ composer req mrstronge/simple-router
 ## Usage
 ### index/bootstrap
 
-* Create a new instance of the router with your project-namespace as parameter (eg 'vendor\project')
-* Call the `resolveUrl` method to get the return of the mapped controller-action.
-  You can pass an optional request-method or -url. By default, the `resolveUrl` method uses `$_SERVER['REQUEST_METHOD']` and `$_SERVER['REQUEST_URI']`.
+* Create a new instance of the router with your project-namespace as parameter. 
+   `$router = MrStronge\SimpleRouter\Router::get('VENDOR\PROJECT_NAMESPACE');`
+* Just call `$router()` as function, to get the return pf the mapped controller method.
 
 ```php
-# index.php
-use MrStronge\SimpleRouter\Router;
+# index.php 
+<?php
 
 include_once(__DIR__ . '/../vendor/autoload.php');
 
-$router = new Router(YOUR_PROJECT_NAMESPACE);
-// just echo the return of the mapped controller-action
-echo $router->resolveUrl();
+// get instance of router and "register namespace"
+$router = MrStronge\SimpleRouter\Router::get('VENDOR\PROJECT_NAMESPACE');
+try {
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($router());
+} catch (\Exception $e) {
+    echo $e->getMessage();
+}
 ```
 
 ### example Controller

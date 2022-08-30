@@ -12,6 +12,10 @@ class ArgumentUtility
         $route = explode('/', trim($route, '/'));
         $urlPath = explode('/', trim($urlPath, '/'));
 
+        if(sizeof($urlPath) != sizeof($route)) {
+            return [];
+        }
+
         $arguments = array_combine($urlPath, $route);
 
         // filter array-entries with parenthesis (placeholder argument-key)

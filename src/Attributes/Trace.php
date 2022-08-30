@@ -5,12 +5,12 @@ namespace MrStronge\SimpleRouter\Attributes;
 use MrStronge\SimpleRouter\Enums\RequestMethod;
 
 #[\Attribute(\Attribute::TARGET_METHOD)]
-class Delete extends Route
+class Trace extends Route
 {
     public function __construct(
         protected string $path,
     )
     {
-        parent::__construct(RequestMethod::DELETE->value, $this->path);
+        parent::__construct(RequestMethod::TRACE->value, $this->path);
     }
 }

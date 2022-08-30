@@ -14,11 +14,13 @@
         "haydenpierce/class-finder": "^0.4"
     },
     "require-dev": {
-        "phpstan/phpstan": "^1.8"
+        "phpstan/phpstan": "^1.8",
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
         "psr-4": {
-            "MrStronge\\SimpleRouter\\": "src/"
+            "MrStronge\\SimpleRouter\\": "src/",
+            "MrStronge\\SimpleRouter\\Tests\\": "tests/"
         }
     }
 

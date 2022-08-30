@@ -4,6 +4,7 @@ namespace MrStronge\SimpleRouter;
 
 use Exception;
 use MrStronge\SimpleRouter\Exception\RouteNotFoundException;
+use MrStronge\SimpleRouter\Exception\RouteAlreadyExistsException;
 use MrStronge\SimpleRouter\Attributes\Route;
 use HaydenPierce\ClassFinder\ClassFinder;
 use MrStronge\SimpleRouter\Utility\ArgumentUtility;
@@ -13,11 +14,27 @@ class Router
     public const ARG_REGEX_PATTERN = '/\{[a-z|0-9]*\}/';
     public const ARG_REGEX_PATTERN_REPLACE = '?[a-z|0-9]{1,}';
 
+    protected static ?self $instance = null;
+
     protected array $routes = [];
 
-    public function __construct(protected string $namespace)
+    private function __construct(protected string $namespace)
     {
         $this->init();
+    }
+
+    public static function get(string $namespace): self
+    {
+        if (self::$instance == null) {
+            self::$instance = new self($namespace);
+        }
+
+        return self::$instance;
+    }
+
+    public function getRoutes(): array
+    {
+        return $this->routes;
     }
 
     /**
@@ -25,15 +42,13 @@ class Router
      *
      * @throws \ReflectionException
      */
-    public function init(): array
+    protected function init(): void
     {
         $classes = $this->getClassesByNamespace();
 
         foreach ($classes as $class) {
             $this->registerRoutesOfClass($class);
         }
-
-        return $this->routes;
     }
 
     /**
@@ -41,7 +56,7 @@ class Router
      *
      * @throws Exception
      */
-    private function getClassesByNamespace(): array
+    protected function getClassesByNamespace(): array
     {
         $classes = ClassFinder::getClassesInNamespace($this->namespace, ClassFinder::RECURSIVE_MODE);
 
@@ -54,8 +69,9 @@ class Router
      * Register routes of given class.
      *
      * @throws \ReflectionException
+     * @throws \RouteAlreadyExistsException
      */
-    private function registerRoutesOfClass(string $class): void
+    protected function registerRoutesOfClass(string $class): void
     {
         $reflection = new \ReflectionClass($class);
         $methods = $reflection->getMethods();
@@ -65,7 +81,15 @@ class Router
             foreach ($attributes as $attribute) {
                 /** @var Route $route */
                 $route = $attribute->newInstance();
+
+                if (array_key_exists($route->getMethod(), $this->routes) && array_key_exists($route->getPath(), $this->routes[$route->getMethod()])) {
+                    throw new RouteAlreadyExistsException(
+                        'Route ' . $route->getPath() . ' of ' . $reflection->getName() . ' already exists in ' . $this->routes[$route->getMethod()][$route->getPath()][0] . ' ... '
+                    );
+                }
+
                 $this->routes[$route->getMethod()][$route->getPath()] = [$reflection->getName(), $method->getName()];
+
             }
         }
     }
@@ -74,9 +98,9 @@ class Router
      * Compare given url with registered routes and build arguments-array.
      * Handle exceptions if route not found.
      *
-     * @throws Exception
+     * @throws RouteNotFoundException
      */
-    public function resolveUrl(string $requestMethod = '', string $url = ''): mixed
+    public function resolveRequest(string $requestMethod = '', string $url = ''): mixed
     {
         $requestMethod = (!empty($requestMethod)) ? $requestMethod : $_SERVER['REQUEST_METHOD'];
         $url = (!empty($url)) ? $url : $_SERVER['REQUEST_URI'];
@@ -114,5 +138,10 @@ class Router
         }
 
         return call_user_func([$instance, $method], $arguments);
+    }
+
+    public function __invoke(string $requestMethod = '', string $url = '')
+    {
+        return $this->resolveRequest($requestMethod, $url);
     }
 }
