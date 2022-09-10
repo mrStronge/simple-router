@@ -2,9 +2,9 @@
 
 namespace MrStronge\SimpleRouter\Exception;
 
-class RouteAlreadyExistsException extends \BadMethodCallException implements ExceptionInterface
+class NoRouteDefinedException extends \BadMethodCallException implements ExceptionInterface
 {
-    public const MESSAGE = 'Route already exists';
+    public const MESSAGE = 'Route not found';
 
     public function __construct(
         string $message = self::MESSAGE,

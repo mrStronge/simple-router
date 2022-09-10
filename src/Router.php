@@ -5,6 +5,7 @@ namespace MrStronge\SimpleRouter;
 use Exception;
 use MrStronge\SimpleRouter\Exception\RouteNotFoundException;
 use MrStronge\SimpleRouter\Exception\RouteAlreadyExistsException;
+use MrStronge\SimpleRouter\Exception\NoRouteDefinedException;
 use MrStronge\SimpleRouter\Attributes\Route;
 use HaydenPierce\ClassFinder\ClassFinder;
 use MrStronge\SimpleRouter\Utility\ArgumentUtility;
@@ -108,6 +109,10 @@ class Router
         $requestUri = explode('?', $url);
         $urlPath = '/' . trim($requestUri[0], '/');
 
+        if(empty($this->routes[$requestMethod])) {
+            throw new NoRouteDefinedException('No route registered for  ' . $requestMethod . ' ' . $urlPath);
+        }
+
         foreach ($this->routes[$requestMethod] as $route => $mapping) {
             $regex = preg_replace(static::ARG_REGEX_PATTERN, static::ARG_REGEX_PATTERN_REPLACE, $route);
             $regex = str_replace('/', '\/', $regex);
@@ -117,7 +122,7 @@ class Router
             }
         }
 
-        throw new RouteNotFoundException();
+        throw new RouteNotFoundException('No route registered for ' . $requestMethod . ' ' . $urlPath);
     }
 
     /**
