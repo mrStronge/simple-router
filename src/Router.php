@@ -72,7 +72,7 @@ class Router
      * @throws \ReflectionException
      * @throws \RouteAlreadyExistsException
      */
-    protected function registerRoutesOfClass(string $class): void
+    public function registerRoutesOfClass(string $class): void
     {
         $reflection = new \ReflectionClass($class);
         $methods = $reflection->getMethods();
