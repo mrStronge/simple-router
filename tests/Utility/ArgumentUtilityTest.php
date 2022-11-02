@@ -9,6 +9,7 @@ class ArgumentUtilityTest extends TestCase
 {
     /**
      * @dataProvider mapPathDataprovider
+     * @covers ArgumentUtility::mapPathsToArguments
      */
     public function testMapPathsToArguments($route, $path, $expected): void
     {

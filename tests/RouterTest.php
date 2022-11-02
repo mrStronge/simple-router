@@ -17,6 +17,10 @@ class RouterTest extends TestCase
         $this->controller = new TestController();
     }
 
+    /**
+     * @covers Router::get
+     * @return void
+     */
     public function testInstance(): void
     {
         $this->assertInstanceOf(Router::class, $this->router);
@@ -25,11 +29,20 @@ class RouterTest extends TestCase
         $this->assertSame($this->router, $newInstance);
     }
 
+    /**
+     * @covers Router::getRoutes
+     * @return void
+     */
     public function testRegisterRoutesOfClass(): void
     {
         $this->assertEquals($this->getRoutesRegister(), $this->router->getRoutes());
     }
 
+    /**
+     * @covers Router::resolveRequest
+     * @return void
+     *
+     */
     public function testResolveRequest(): void
     {
         $this->assertEquals('index', $this->router->resolveRequest('GET', '/'));
